@@ -13,6 +13,7 @@ This is an interactive web-based to-do list that helps users organize their dail
 7. Click **Reset All** to clear the entire list and start over.
 
 ## Link to Live site 
+https://gabriellasnascimento.github.io/mytodolist/ 
 
 ## What I learned 
 Through this project, I learned how JavaScript can make a webpage interactive by responding to user actions and changing the DOM. I practiced using event listeners, functions, arrays, conditionals, and DOM methods. I also learned how to store data with localStorage so tasks stay saved even after closing the browser. This project helped me better understand how HTML, CSS, and JavaScript work together to create a useful web tool.
