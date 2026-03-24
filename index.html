@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Daily To-Do List</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f1eb;
+      color: #2f2f2f;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 720px;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      padding: 28px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 2rem;
+      color: #5d4037;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: #7a6a61;
+      font-size: 0.95rem;
+    }
+
+    .input-section {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .input-section input {
+      flex: 1;
+      min-width: 220px;
+      padding: 12px 14px;
+      border: 1px solid #dbcfc6;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    .input-section button,
+    .filters button,
+    .actions button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: 0.2s ease;
+    }
+
+    .add-btn {
+      background: #8d6e63;
+      color: white;
+    }
+
+    .add-btn:hover {
+      background: #73584f;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filters button {
+      background: #eee5de;
+      color: #4f433d;
+    }
+
+    .filters button.active {
+      background: #8d6e63;
+      color: white;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .clear-completed-btn,
+    .reset-btn {
+      background: #d9c7bc;
+      color: #3d302c;
+    }
+
+    .clear-completed-btn:hover,
+    .reset-btn:hover {
+      background: #cbb5a8;
+    }
+
+    .stats {
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      background: #faf7f4;
+      border: 1px solid #eee3db;
+      border-radius: 12px;
+      color: #6a5a52;
+      font-size: 0.95rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: #fcfaf8;
+      border: 1px solid #eee3db;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-left input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .task-text {
+      word-break: break-word;
+    }
+
+    .completed .task-text {
+      text-decoration: line-through;
+      color: #9a8f89;
+    }
+
+    .delete-btn {
+      background: #d46a6a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 12px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .delete-btn:hover {
+      background: #b95555;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 20px;
+      color: #8b7d75;
+      background: #faf7f4;
+      border: 1px dashed #ddcec4;
+      border-radius: 12px;
+    }
+
+    .error {
+      color: #b24d4d;
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+      min-height: 18px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 22px;
+      color: #8f7f76;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .actions,
+      .filters {
+        width: 100%;
+      }
+
+      .filters button,
+      .actions button {
+        flex: 1;
+      }
+
+      li {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .delete-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>My Daily To-Do List</h1>
+      <p class="subtitle">Plan the day, stay on track, and actually get things done.</p>
+    </header>
+
+    <section class="input-section">
+      <input type="text" id="taskInput" placeholder="Add a task..." aria-label="Add a task">
+      <button class="add-btn" id="addTaskBtn">Add Task</button>
+    </section>
+
+    <p class="error" id="errorMessage"></p>
+
+    <section class="controls">
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="active">Active</button>
+        <button class="filter-btn" data-filter="completed">Completed</button>
+      </div>
+
+      <div class="actions">
+        <button class="clear-completed-btn" id="clearCompletedBtn">Clear Completed</button>
+        <button class="reset-btn" id="resetBtn">Reset All</button>
+      </div>
+    </section>
+
+    <section class="stats" id="stats">
+      Total: 0 | Active: 0 | Completed: 0
+    </section>
+
+    <section>
+      <ul id="taskList"></ul>
+      <div class="empty-state" id="emptyState">No tasks yet. Add one to get started.</div>
+    </section>
+
+    <footer>
+      Built as an interactive web tool with HTML, CSS, and JavaScript.
+    </footer>
+  </main>
+
+  <script>
+    const taskInput = document.getElementById("taskInput");
+    const addTaskBtn = document.getElementById("addTaskBtn");
+    const taskList = document.getElementById("taskList");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const clearCompletedBtn = document.getElementById("clearCompletedBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const stats = document.getElementById("stats");
+    const emptyState = document.getElementById("emptyState");
+    const errorMessage = document.getElementById("errorMessage");
+
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [
+      { id: Date.now() + 1, text: "Study for TOM", completed: false },
+      { id: Date.now() + 2, text: "Go to the gym", completed: false },
+      { id: Date.now() + 3, text: "Do groceries", completed: false },
+      { id: Date.now() + 4, text: "Unpack", completed: false },
+      { id: Date.now() + 5, text: "Answer emails", completed: false },
+      { id: Date.now() + 6, text: "Work on homework", completed: false }
+    ];
+
+    let currentFilter = "all";
+
+    function saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      setTimeout(() => {
+        errorMessage.textContent = "";
+      }, 2000);
+    }
+
+    function updateStats() {
+      const total = tasks.length;
+      const completed = tasks.filter(task => task.completed).length;
+      const active = total - completed;
+      stats.textContent = `Total: ${total} | Active: ${active} | Completed: ${completed}`;
+    }
+
+    function getFilteredTasks() {
+      if (currentFilter === "active") {
+        return tasks.filter(task => !task.completed);
+      }
+      if (currentFilter === "completed") {
+        return tasks.filter(task => task.completed);
+      }
+      return tasks;
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = "";
+
+      const filteredTasks = getFilteredTasks();
+
+      if (filteredTasks.length === 0) {
+        emptyState.style.display = "block";
+      } else {
+        emptyState.style.display = "none";
+      }
+
+      filteredTasks.forEach(task => {
+        const li = document.createElement("li");
+        if (task.completed) {
+          li.classList.add("completed");
+        }
+
+        li.innerHTML = `
+          <div class="task-left">
+            <input type="checkbox" ${task.completed ? "checked" : ""} aria-label="Complete task">
+            <span class="task-text">${task.text}</span>
+          </div>
+          <button class="delete-btn">Delete</button>
+        `;
+
+        const checkbox = li.querySelector('input[type="checkbox"]');
+        const deleteBtn = li.querySelector(".delete-btn");
+
+        checkbox.addEventListener("change", () => {
+          task.completed = checkbox.checked;
+          saveTasks();
+          renderTasks();
+        });
+
+        deleteBtn.addEventListener("click", () => {
+          tasks = tasks.filter(t => t.id !== task.id);
+          saveTasks();
+          renderTasks();
+        });
+
+        taskList.appendChild(li);
+      });
+
+      updateStats();
+    }
+
+    function addTask() {
+      const text = taskInput.value.trim();
+
+      if (text === "") {
+        showError("Please enter a task before adding.");
+        return;
+      }
+
+      tasks.push({
+        id: Date.now(),
+        text: text,
+        completed: false
+      });
+
+      taskInput.value = "";
+      saveTasks();
+      renderTasks();
+    }
+
+    addTaskBtn.addEventListener("click", addTask);
+
+    taskInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        addTask();
+      }
+    });
+
+    filterButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        currentFilter = button.dataset.filter;
+
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        renderTasks();
+      });
+    });
+
+    clearCompletedBtn.addEventListener("click", () => {
+      tasks = tasks.filter(task => !task.completed);
+      saveTasks();
+      renderTasks();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      tasks = [];
+      saveTasks();
+      renderTasks();
+    });
+
+    renderTasks();
+  </script>
+</body>
+</html>
